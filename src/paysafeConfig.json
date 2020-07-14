@@ -1,0 +1,25 @@
+{
+  "credentials": {
+    "public": {
+      "keyId": "public-7751",
+      "keyValue": "B-qa2-0-5f031cbe-0-302d021500890ef262296563accd1cb4aab790323d2fd570d30214510bcdacdaa4f03f59477eef13f2af5ad13e3044",
+      "base64": "cHVibGljLTc3NTE6Qi1xYTItMC01ZjAzMWNiZS0wLTMwMmQwMjE1MDA4OTBlZjI2MjI5NjU2M2FjY2QxY2I0YWFiNzkwMzIzZDJmZDU3MGQzMDIxNDUxMGJjZGFjZGFhNGYwM2Y1OTQ3N2VlZjEzZjJhZjVhZDEzZTMwNDQ="
+    },
+    "private": {
+      "keyId": "private-7751",
+      "keyValue": "B-qa2-0-5f031cdd-0-302d0214496be84732a01f690268d3b8eb72e5b8ccf94e2202150085913117f2e1a8531505ee8ccfc8e98df3cf1748",
+      "base64": "cHJpdmF0ZS03NzUxOkItcWEyLTAtNWYwMzFjZGQtMC0zMDJkMDIxNDQ5NmJlODQ3MzJhMDFmNjkwMjY4ZDNiOGViNzJlNWI4Y2NmOTRlMjIwMjE1MDA4NTkxMzExN2YyZTFhODUzMTUwNWVlOGNjZmM4ZTk4ZGYzY2YxNzQ4"
+    }
+  },
+  "merchant": {
+    "merchantRefNumber": "rdjvfg9a52",
+    "merchantDescriptor": {
+      "dynamicDescriptor": "XYZ",
+      "phone": "1234567890"
+    }
+  },
+  "environment": "TEST",
+  "currency": "USD",
+  "locale": "en_US",
+  "paysafeCheckoutSDKSource": "https://hosted.paysafe.com/checkout/v2/paysafe.checkout.min.js"
+}

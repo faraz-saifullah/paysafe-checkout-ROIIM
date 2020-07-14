@@ -7,6 +7,7 @@ import Cart from "./components/cart/Cart";
 import data from "./Data";
 import Context from "./Context";
 import Navbar from "./components/navbar/Navbar";
+import Checkout from "./components/checkout/Checkout";
 
 export default class App extends Component {
   constructor(props) {
@@ -58,7 +59,7 @@ export default class App extends Component {
 
   checkout = () => {
     if (!this.state.user) {
-      this.routerRef.current.history.push("/login");
+      this.routerRef.current.history.push("/checkout");
       return;
     }
     const cart = this.state.cart;
@@ -115,6 +116,7 @@ export default class App extends Component {
               <Route exact path="/" component={ProductList} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/cart" component={Cart} />
+              <Route exact path="/checkout" component={Checkout} />
               <Route exact path="/add-product" component={AddProduct} />
               <Route exact path="/products" component={ProductList} />
             </Switch>
