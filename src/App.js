@@ -8,6 +8,7 @@ import data from "./Data";
 import Context from "./Context";
 import Navbar from "./components/navbar/Navbar";
 import Checkout from "./components/checkout/Checkout";
+import axios from "axios";
 
 export default class App extends Component {
   constructor(props) {
@@ -86,14 +87,18 @@ export default class App extends Component {
     this.setState({ cart });
   };
 
-  componentDidMount() {
-    let products = localStorage.getItem("products");
-    let cart = localStorage.getItem("cart");
-    let user = localStorage.getItem("user");
-    products = products ? JSON.parse(products) : data.initProducts;
-    cart = cart ? JSON.parse(cart) : {};
-    user = user ? JSON.parse(user) : null;
-    this.setState({ products, user, cart });
+  async componentDidMount() {
+    try {
+      const resp = await axios.get("http://localhost:3001/products");
+      let products = resp.data.data;
+      let cart = localStorage.getItem("cart");
+      let user = localStorage.getItem("user");
+      cart = cart ? JSON.parse(cart) : {};
+      user = user ? JSON.parse(user) : null;
+      this.setState({ products, user, cart });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {
