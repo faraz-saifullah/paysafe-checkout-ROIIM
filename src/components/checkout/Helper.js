@@ -1,5 +1,6 @@
 import config from "../../paysafeConfig.json";
 export function prepareSetupInput(formInput, totalAmout) {
+  const merchantRefNumber = Math.random().toString(36).slice(2);
   return {
     currency: `${config.currency}`,
     amount: totalAmout * 100,
@@ -17,8 +18,8 @@ export function prepareSetupInput(formInput, totalAmout) {
     },
     billingAddress: formInput,
     environment: `${config.environment}`,
-    merchantRefNum: `${config.merchant.merchantRefNumber}`,
-    canEditAmount: true,
+    merchantRefNum: `${merchantRefNumber}`,
+    canEditAmount: false,
     merchantDescriptor: config.merchant.merchantDescriptor,
     displayPaymentMethods: ["card"],
     paymentMethodDetails: {},
