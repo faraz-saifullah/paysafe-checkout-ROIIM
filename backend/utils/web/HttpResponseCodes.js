@@ -35,6 +35,10 @@ class HTTPResponseCodes {
     return 405;
   }
 
+  CONFLICT() {
+    return 409;
+  }
+
   GONE() {
     return 410;
   }

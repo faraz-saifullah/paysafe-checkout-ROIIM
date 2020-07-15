@@ -30,6 +30,7 @@ class Checkout extends Component {
       setupInput,
       callBackFunction
     );
+    console.log(setupInput.merchantRefNum);
   };
 
   componentDidMount() {
