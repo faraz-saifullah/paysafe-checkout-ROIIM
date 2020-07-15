@@ -12,7 +12,6 @@
     }
   },
   "merchant": {
-    "merchantRefNumber": "rdjvfg9a52",
     "merchantDescriptor": {
       "dynamicDescriptor": "XYZ",
       "phone": "1234567890"

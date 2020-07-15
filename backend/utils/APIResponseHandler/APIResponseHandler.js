@@ -21,6 +21,16 @@ class APIResponseHandler {
       return response.status(200).json(authenticationResponse);
     }
   }
+
+  handlePaysafe(response, result) {
+    if (result.status === 201) {
+      return response.status(result.status).send(result.data);
+    } else {
+      return response
+        .status(HTTPResponseCodes.CONFLICT())
+        .send(result);
+    }
+  }
 }
 
 module.exports = APIResponseHandler;
