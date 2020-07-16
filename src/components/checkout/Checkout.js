@@ -27,12 +27,33 @@ class Checkout extends Component {
         country: "",
         state: "",
       },
+      paysafeCustomerId: "",
       isPaymentProcessing: false,
     };
     this.baseState = this.state;
   }
 
   componentDidMount() {
+    //update userinfo on component mount when user is logged in
+    setImmediate(() => {
+      const user = this.props.context.user;
+      if (user) {
+        const customerInfo = {
+          firstName: user["custom:firstName"],
+          lastName: user["custom:lastName"],
+          phone: user["custom:phone"],
+          day: user["custom:day"],
+          month: user["custom:month"],
+          year: user["custom:year"],
+          email: user["email"],
+        };
+        this.setState({
+          customerInfo,
+          paysafeCustomerId: user["custom:paysafe_id"],
+        });
+      }
+    });
+    //including Paysafe SDK
     const script = document.createElement("script");
     script.src = config.paysafeCheckoutSDKSource;
     script.async = true;
@@ -42,14 +63,17 @@ class Checkout extends Component {
   paysafeCheckOut = async (totalAmout) => {
     this.setState({
       isPaymentProcessing: true,
-    })
+    });
     const helper = new Helper();
-    const setupInput = helper.prepareSetupInput(
+    //prepare input for passing to setup function beforehand
+    const setupInput = await helper.prepareSetupInput(
       this.state.billingAddress,
       this.state.customerInfo,
-      totalAmout
+      totalAmout,
+      this.state.paysafeCustomerId
     );
     //TODO handle invalid input data before sending to setup function
+    //calling paysafe checkout function
     window.paysafe.checkout.setup(
       `${config.credentials.public.base64}`,
       setupInput,
@@ -57,6 +81,7 @@ class Checkout extends Component {
       helper.closeCallBack
     );
     try {
+      //check payment status when checkout.setup function finishes execution
       const status = await helper.paymentStatus;
       if (status.status === "success") {
         this.props.context.clearCart();
@@ -66,26 +91,32 @@ class Checkout extends Component {
     } catch (err) {
       //TODO handle for invalid form input data
       this.setState({
-        isPaymentProcessing: false
-      })
+        isPaymentProcessing: false,
+      });
     }
   };
 
+  //checkout using paysafe
   handleCheckout = async (event) => {
     event.preventDefault();
-    const { cart } = this.props.context;
-    if (Object.keys(cart).length === 0 && cart.constructor === Object) {
-      alert("You have an empty cart! Please add products to cart.");
-      this.props.history.push("/products");
-      return;
-    }
-    let totalAmout = 0;
-    for (let cartItem in cart) {
-      totalAmout += cart[cartItem].product.price * 100;
-    }
-    this.paysafeCheckOut(totalAmout);
+    //setImmediate used to make sure smooth processing even
+    //when user has just logged in
+    setImmediate(() => {
+      const { cart } = this.props.context;
+      if (Object.keys(cart).length === 0 && cart.constructor === Object) {
+        alert("You have an empty cart! Please add products to cart.");
+        this.props.history.push("/products");
+        return;
+      }
+      let totalAmout = 0;
+      for (let cartItem in cart) {
+        totalAmout += cart[cartItem].product.price * 100;
+      }
+      this.paysafeCheckOut(totalAmout);
+    });
   };
 
+  //handle change in form input firlds for user details
   onCustomerDetailsInputChange = (event) => {
     const changedInput = { ...this.state.customerInfo };
     changedInput[event.target.id] = event.target.value;
@@ -94,6 +125,7 @@ class Checkout extends Component {
     });
   };
 
+  //Handle change in form input fields for billing address
   onBillingAddressInputChange = (event) => {
     const changedInput = { ...this.state.billingAddress };
     changedInput[event.target.id] = event.target.value;
@@ -237,7 +269,11 @@ class Checkout extends Component {
           </FormControl>
           <br />
           <br />
-          <button type="submit" className="button is-primary is-medium" disabled={this.state.isPaymentProcessing}>
+          <button
+            type="submit"
+            className="button is-primary is-medium"
+            disabled={this.state.isPaymentProcessing}
+          >
             Proceed To Payment
           </button>
         </form>

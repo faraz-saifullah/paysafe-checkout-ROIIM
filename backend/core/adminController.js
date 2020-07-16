@@ -5,6 +5,7 @@ class Admin {
     this.productsDbConnector = new ProductsDbConnector();
   }
 
+  //Add new product
   async addProduct(req) {
     try {
       return this.productsDbConnector.addNewProduct(req.body);
