@@ -1,6 +1,10 @@
 import config from "../../paysafeConfig.json";
+import axios from "axios";
+
+let merchantRefNumber = '';
+
 export function prepareSetupInput(formInput, totalAmout) {
-  const merchantRefNumber = Math.random().toString(36).slice(2);
+  merchantRefNumber = Math.random().toString(36).slice(5);
   return {
     currency: `${config.currency}`,
     amount: totalAmout * 100,
@@ -26,13 +30,21 @@ export function prepareSetupInput(formInput, totalAmout) {
   };
 }
 
-export function callBackFunction(instance, error, result) {
+export async function callBackFunction(instance, error, result) {
   if (result && result.paymentHandleToken) {
-    console.log(result);
-    instance.showSuccessScreen(JSON.stringify(result));
+    try {
+      const response = await axios.post("http://localhost:3001/payments", {
+        merchantRefNum: merchantRefNumber,
+        paymentHandleToken: result.paymentHandleToken,
+        amount: result.amount,
+      });
+      instance.showSuccessScreen(`Payment ID: ${response.data.id}`);
+    } catch (err) {
+      instance.showFailureScreen("Payment Failed! Please Try Again.");
+      throw err;
+    }
     return result;
   } else {
-    instance.showFailScreen();
-    console.log(error);
+    throw error;
   }
 }
