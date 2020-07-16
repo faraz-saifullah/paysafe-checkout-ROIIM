@@ -16,6 +16,7 @@ class ProductList extends Component {
         <div className="container">
           <div className="column columns is-multiline">
             {products && products.length ? (
+              // Diplay each product
               products.map((product, index) => (
                 <ProductItem
                   product={product}

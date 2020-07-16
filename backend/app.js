@@ -7,10 +7,11 @@ const logger = require("morgan");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
-const paymentsRouter = require("./routes/payments");
+const paymentsRouter = require("./routes/payment");
 const adminRouter = require("./routes/admin");
-const productsRouter = require("./routes/products");
+const productsRouter = require("./routes/product");
 const userRouter = require("./routes/user");
+const tokenRouter = require("./routes/token");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/payments", paymentsRouter);
 app.use("/admin", adminRouter);
 app.use("/products", productsRouter);
 app.use("/users", userRouter);
+app.use("/tokens", tokenRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

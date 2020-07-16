@@ -24,19 +24,16 @@ class Navbar extends Component {
           <Link to="/products" className="navbar-item">
             Products
           </Link>
-          {/* {this.props.context.user && this.props.context.user.accessLevel < 1 && (
-            <Link to="/add-product" className="navbar-item">
-              Add Product
-            </Link>
-          )} */}
           <Link to="/cart" className="navbar-item">
             Cart
             <span className="tag is-primary" style={{ marginLeft: "5px" }}>
+              {/* get number of products present in the cart */}
               {Object.keys(this.props.context.cart).length}
             </span>
           </Link>
           {!this.props.context.user ? (
             <>
+              {/* login and register should only show when user is not logged in */}
               <Link to="/login" className="navbar-item">
                 Login
               </Link>
@@ -45,6 +42,7 @@ class Navbar extends Component {
               </Link>
             </>
           ) : (
+            // Logout should only show when user is logged in
             <a
               href="/"
               className="navbar-item"

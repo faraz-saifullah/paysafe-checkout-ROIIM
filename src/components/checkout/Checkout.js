@@ -34,6 +34,7 @@ class Checkout extends Component {
   }
 
   componentDidMount() {
+    //update userinfo on component mount when user is logged in
     setImmediate(() => {
       const user = this.props.context.user;
       const customerInfo = {
@@ -50,6 +51,7 @@ class Checkout extends Component {
         paysafeCustomerId: user["custom:paysafe_id"],
       });
     });
+    //including Paysafe SDK
     const script = document.createElement("script");
     script.src = config.paysafeCheckoutSDKSource;
     script.async = true;
@@ -61,6 +63,7 @@ class Checkout extends Component {
       isPaymentProcessing: true,
     });
     const helper = new Helper();
+    //prepare input for passing to setup function beforehand
     const setupInput = await helper.prepareSetupInput(
       this.state.billingAddress,
       this.state.customerInfo,
@@ -68,6 +71,7 @@ class Checkout extends Component {
       this.state.paysafeCustomerId
     );
     //TODO handle invalid input data before sending to setup function
+    //calling paysafe checkout function
     window.paysafe.checkout.setup(
       `${config.credentials.public.base64}`,
       setupInput,
@@ -75,6 +79,7 @@ class Checkout extends Component {
       helper.closeCallBack
     );
     try {
+      //check payment status when checkout.setup function finishes execution
       const status = await helper.paymentStatus;
       if (status.status === "success") {
         this.props.context.clearCart();
@@ -89,8 +94,11 @@ class Checkout extends Component {
     }
   };
 
+  //checkout using paysafe
   handleCheckout = async (event) => {
     event.preventDefault();
+    //setImmediate used to make sure smooth processing even
+    //when user has just logged in
     setImmediate(() => {
       const { cart } = this.props.context;
       if (Object.keys(cart).length === 0 && cart.constructor === Object) {
@@ -106,6 +114,7 @@ class Checkout extends Component {
     });
   };
 
+  //handle change in form input firlds for user details
   onCustomerDetailsInputChange = (event) => {
     const changedInput = { ...this.state.customerInfo };
     changedInput[event.target.id] = event.target.value;
@@ -114,6 +123,7 @@ class Checkout extends Component {
     });
   };
 
+  //Handle change in form input fields for billing address
   onBillingAddressInputChange = (event) => {
     const changedInput = { ...this.state.billingAddress };
     changedInput[event.target.id] = event.target.value;
