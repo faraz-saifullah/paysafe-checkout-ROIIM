@@ -34,6 +34,8 @@ export default class App extends Component {
     try {
       Auth.signOut();
       this.setState({ user: null });
+      this.clearCart();
+      this.routerRef.current.history.push("/");
     } catch (err) {
       console.error(err.message);
     }
@@ -79,7 +81,11 @@ export default class App extends Component {
 
   async componentDidMount() {
     axios
-      .get("http://localhost:3001/products")
+      .get("http://localhost:3001/products", {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
       .then((response) => {
         let products = response.data.data;
         this.setState({ products });

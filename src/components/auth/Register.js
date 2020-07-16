@@ -26,16 +26,24 @@ class Register extends Component {
 
   createPaysafeUser = async () => {
     try {
-      const user = await axios.post("http://localhost:3001/users", {
-        username: this.state.username,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        phone: this.state.phone,
-        email: this.state.email,
-        day: this.state.day,
-        month: this.state.month,
-        year: this.state.year,
-      });
+      const user = await axios.post(
+        "http://localhost:3001/users",
+        {
+          username: this.state.username,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          phone: this.state.phone,
+          email: this.state.email,
+          day: this.state.day,
+          month: this.state.month,
+          year: this.state.year,
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
       return user.data;
     } catch (err) {
       return err;

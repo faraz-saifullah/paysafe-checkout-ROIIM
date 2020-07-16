@@ -22,10 +22,18 @@ export default class Helper {
     this.merchantRefNum = Math.random().toString(36).slice(5);
     this.customerId = customerId;
     if (customerId !== "") {
-      const res = await axios.post("http://localhost:3001/payments/token", {
-        merchantRefNum: this.merchantRefNum,
-        customerId: this.customerId,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/payments/token",
+        {
+          merchantRefNum: this.merchantRefNum,
+          customerId: this.customerId,
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
       this.singleUseCustomerToken = res.data.singleUseCustomerToken;
     }
     customerInfo.dateOfBirth = {

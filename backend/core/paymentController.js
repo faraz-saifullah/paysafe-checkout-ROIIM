@@ -18,6 +18,7 @@ class Payment {
         "Content-Type": `application/json;`,
         Authorization: `Basic ${config.credentials.private.base64}`,
         Simulator: "EXTERNAL",
+        "Access-Control-Allow-Origin": "*",
       };
       return await axios.post(
         "https://api.test.paysafe.com/paymenthub/v1/payments",
@@ -37,6 +38,7 @@ class Payment {
         "Content-Type": `application/json;`,
         Authorization: `Basic ${config.credentials.private.base64}`,
         Simulator: "EXTERNAL",
+        "Access-Control-Allow-Origin": "*",
       };
       const body = {
         merchantRefNum: `${req.body.merchantRefNum}`,
