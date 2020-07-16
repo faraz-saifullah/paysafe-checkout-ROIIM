@@ -13,7 +13,13 @@ class APIResponseHandler {
   }
 
   handlePaysafe(response, result) {
-    return response.status(result.status).send(result.data);
+    if (result.status === 201) {
+      return response.status(result.status).send(result.data);
+    } else {
+      return response
+        .status(HTTPResponseCodes.INTERNAL_SERVER_ERROR())
+        .send(result);
+    }
   }
 }
 
