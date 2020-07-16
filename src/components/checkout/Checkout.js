@@ -42,7 +42,7 @@ class Checkout extends Component {
   paysafeCheckOut = async (totalAmout) => {
     this.setState({
       isPaymentProcessing: true,
-    })
+    });
     const helper = new Helper();
     const setupInput = helper.prepareSetupInput(
       this.state.billingAddress,
@@ -66,8 +66,8 @@ class Checkout extends Component {
     } catch (err) {
       //TODO handle for invalid form input data
       this.setState({
-        isPaymentProcessing: false
-      })
+        isPaymentProcessing: false,
+      });
     }
   };
 
@@ -237,7 +237,11 @@ class Checkout extends Component {
           </FormControl>
           <br />
           <br />
-          <button type="submit" className="button is-primary is-medium" disabled={this.state.isPaymentProcessing}>
+          <button
+            type="submit"
+            className="button is-primary is-medium"
+            disabled={this.state.isPaymentProcessing}
+          >
             Proceed To Payment
           </button>
         </form>
