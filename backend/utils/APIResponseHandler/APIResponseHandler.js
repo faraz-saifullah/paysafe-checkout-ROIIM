@@ -12,24 +12,8 @@ class APIResponseHandler {
     }
   }
 
-  handleAuthentication(response, authenticationResponse) {
-    if (!authenticationResponse.success) {
-      return response.status(400).json(authenticationResponse);
-    } else if (authenticationResponse.error) {
-      return response.status(500).send(authenticationResponse);
-    } else {
-      return response.status(200).json(authenticationResponse);
-    }
-  }
-
   handlePaysafe(response, result) {
-    if (result.status === 201) {
-      return response.status(result.status).send(result.data);
-    } else {
-      return response
-        .status(HTTPResponseCodes.CONFLICT())
-        .send(result);
-    }
+    return response.status(result.status).send(result.data);
   }
 }
 
