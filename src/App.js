@@ -91,8 +91,7 @@ export default class App extends Component {
       });
     Auth.currentAuthenticatedUser()
       .then((user) => {
-        if (user) this.setState({ user });
-        console.log(user.attributes);
+        if (user) this.setState({ user: user.attributes });
       })
       .catch(() => {
         this.setState({

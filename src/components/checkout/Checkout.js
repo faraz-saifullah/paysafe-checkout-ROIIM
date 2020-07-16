@@ -27,12 +27,29 @@ class Checkout extends Component {
         country: "",
         state: "",
       },
+      paysafeCustomerId: "",
       isPaymentProcessing: false,
     };
     this.baseState = this.state;
   }
 
   componentDidMount() {
+    setImmediate(() => {
+      const user = this.props.context.user;
+      const customerInfo = {
+        firstName: user["custom:firstName"],
+        lastName: user["custom:lastName"],
+        phone: user["custom:phone"],
+        day: user["custom:day"],
+        month: user["custom:month"],
+        year: user["custom:year"],
+        email: user["email"],
+      };
+      this.setState({
+        customerInfo,
+        paysafeCustomerId: user["custom:paysafe_id"],
+      });
+    });
     const script = document.createElement("script");
     script.src = config.paysafeCheckoutSDKSource;
     script.async = true;
@@ -44,10 +61,11 @@ class Checkout extends Component {
       isPaymentProcessing: true,
     });
     const helper = new Helper();
-    const setupInput = helper.prepareSetupInput(
+    const setupInput = await helper.prepareSetupInput(
       this.state.billingAddress,
       this.state.customerInfo,
-      totalAmout
+      totalAmout,
+      this.state.paysafeCustomerId
     );
     //TODO handle invalid input data before sending to setup function
     window.paysafe.checkout.setup(
@@ -73,17 +91,19 @@ class Checkout extends Component {
 
   handleCheckout = async (event) => {
     event.preventDefault();
-    const { cart } = this.props.context;
-    if (Object.keys(cart).length === 0 && cart.constructor === Object) {
-      alert("You have an empty cart! Please add products to cart.");
-      this.props.history.push("/products");
-      return;
-    }
-    let totalAmout = 0;
-    for (let cartItem in cart) {
-      totalAmout += cart[cartItem].product.price * 100;
-    }
-    this.paysafeCheckOut(totalAmout);
+    setImmediate(() => {
+      const { cart } = this.props.context;
+      if (Object.keys(cart).length === 0 && cart.constructor === Object) {
+        alert("You have an empty cart! Please add products to cart.");
+        this.props.history.push("/products");
+        return;
+      }
+      let totalAmout = 0;
+      for (let cartItem in cart) {
+        totalAmout += cart[cartItem].product.price * 100;
+      }
+      this.paysafeCheckOut(totalAmout);
+    });
   };
 
   onCustomerDetailsInputChange = (event) => {
