@@ -27,8 +27,7 @@ class ProductsDbConnector {
 
   async getAllProducts() {
     const sqlQuery = {
-      text:
-        "SELECT * FROM products",
+      text: "SELECT * FROM products",
     };
     try {
       return await this.dataService.executeQueryAsPromise(sqlQuery);
