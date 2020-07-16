@@ -35,12 +35,12 @@ class Register extends Component {
         day: this.state.day,
         month: this.state.month,
         year: this.state.year,
-      })
+      });
       return user.data;
     } catch (err) {
       return err;
     }
-  }
+  };
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,13 +53,13 @@ class Register extends Component {
           password,
           attributes: {
             email: email,
-            'custom:paysafe_id': `${userData.id}`,
-            'custom:firstName': `${userData.firstName}`,
-            'custom:lastName': `${userData.lastName}`,
-            'custom:phone': `${userData.phone}`,
-            'custom:day': `${userData.dateOfBirth.day}`,
-            'custom:month': `${userData.dateOfBirth.month}`,
-            'custom:year': `${userData.dateOfBirth.year}`,
+            "custom:paysafe_id": `${userData.id}`,
+            "custom:firstName": `${userData.firstName}`,
+            "custom:lastName": `${userData.lastName}`,
+            "custom:phone": `${userData.phone}`,
+            "custom:day": `${userData.dateOfBirth.day}`,
+            "custom:month": `${userData.dateOfBirth.month}`,
+            "custom:year": `${userData.dateOfBirth.year}`,
           },
         });
         alert(
@@ -67,7 +67,7 @@ class Register extends Component {
         );
         this.props.history.push("/login");
       } else {
-        alert('Failed to create user. Try Again!')
+        alert("Failed to create user. Try Again!");
       }
     } catch (error) {
       console.log(error);
@@ -203,8 +203,8 @@ class Register extends Component {
         </center>
       </Fragment>
     ) : (
-        <Redirect to="/products" />
-      );
+      <Redirect to="/products" />
+    );
   }
 }
 

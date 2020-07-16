@@ -11,8 +11,8 @@ class Login extends Component {
       password: "",
     };
   }
-  handleChange = (e) =>
-    this.setState({ [e.target.name]: e.target.value, error: "" });
+  handleChange = (event) =>
+    this.setState({ [event.target.name]: event.target.value, error: "" });
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +23,7 @@ class Login extends Component {
         username,
         password,
       });
-      this.props.context.login(user);
+      this.props.context.login(user.attributes);
       this.props.history.push("/");
     } catch (error) {
       console.log(error);
