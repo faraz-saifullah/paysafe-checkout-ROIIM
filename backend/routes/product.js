@@ -1,6 +1,6 @@
 let express = require("express");
 let router = express.Router();
-let Product = require("../core/productsController");
+let Product = require("../core/productController");
 let APIResponseHandler = require("../utils/APIResponseHandler/APIResponseHandler");
 
 router.get("/", async function (req, res, next) {
