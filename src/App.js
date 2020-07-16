@@ -61,19 +61,7 @@ export default class App extends Component {
   };
 
   checkout = () => {
-    if (!this.state.user) {
-      this.routerRef.current.history.push("/checkout");
-      return;
-    }
-    const cart = this.state.cart;
-    const products = this.state.products.map((p) => {
-      if (cart[p.name]) {
-        p.stock = p.stock - cart[p.name].amount;
-      }
-      return p;
-    });
-    this.setState({ products });
-    this.clearCart();
+    this.routerRef.current.history.push("/checkout");
   };
 
   removeFromCart = (cartItemId) => {
@@ -103,7 +91,7 @@ export default class App extends Component {
       });
     Auth.currentAuthenticatedUser()
       .then((user) => {
-        if (user) this.setState({ user });
+        if (user) this.setState({ user: user.attributes });
       })
       .catch(() => {
         this.setState({
