@@ -1,5 +1,5 @@
 # paysafe-checkout-ROIIM
-This is a simple E-commerce website where user can purchase from the existing list of products and make Payments.
+This is a simple E-commerce website where users can purchase products from an existing list of products and make Payments.
 Payment functionality is implemented using Paysafe. (All the payments are test payments and funds are not actually deducted from cards)
 
 Below are the instructions to deploy and use the application locall:
