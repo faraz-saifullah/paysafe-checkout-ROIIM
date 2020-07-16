@@ -4,7 +4,7 @@ import withContext from "../../withContext";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import config from "../../paysafeConfig.json";
-import { prepareSetupInput, callBackFunction } from "./Helper";
+import Helper from "./Helper";
 
 class Checkout extends Component {
   constructor(props) {
@@ -23,13 +23,21 @@ class Checkout extends Component {
     this.baseState = this.state;
   }
 
-  paysafeCheckOut = (totalAmout) => {
-    const setupInput = prepareSetupInput(this.state.formInput, totalAmout);
+  paysafeCheckOut = async (totalAmout) => {
+    const helper = new Helper();
+    const setupInput = helper.prepareSetupInput(this.state.formInput, totalAmout);
     window.paysafe.checkout.setup(
       `${config.credentials.public.base64}`,
       setupInput,
-      callBackFunction
+      helper.callBackFunction,
+      helper.closeCallBack
     );
+    const status = await helper.paymentStatus;
+    if (status.status === "success") {
+      this.props.context.clearCart();
+      this.props.history.push("/");
+      //TODO: Display Success and failure information of a different page
+    }
   };
 
   componentDidMount() {
