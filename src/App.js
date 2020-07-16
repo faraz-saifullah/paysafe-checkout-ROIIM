@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
-import Login from "./components/Login";
+import Login from "./components/auth/Login";
 import ProductList from "./components/products/ProductList";
 import AddProduct from "./components/addProduct/AddProduct";
 import Cart from "./components/cart/Cart";
-import data from "./Data";
+import { Auth } from "aws-amplify";
 import Context from "./Context";
 import Navbar from "./components/navbar/Navbar";
 import Checkout from "./components/checkout/Checkout";
+import Register from "./components/auth/Register";
 import axios from "axios";
 
 export default class App extends Component {
@@ -21,20 +22,21 @@ export default class App extends Component {
 
     this.routerRef = React.createRef();
   }
-  login = (usn, pwd) => {
-    let user = data.users.find((u) => u.username === usn && u.password === pwd);
+
+  login = (user) => {
     if (user) {
       this.setState({ user });
-      localStorage.setItem("user", JSON.stringify(user));
-      return true;
     }
-    return false;
   };
 
-  logout = (e) => {
-    e.preventDefault();
-    this.setState({ user: null });
-    localStorage.removeItem("user");
+  logout = (event) => {
+    event.preventDefault();
+    try {
+      Auth.signOut();
+      this.setState({ user: null });
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   addProduct = (product, callback) => {
@@ -88,17 +90,29 @@ export default class App extends Component {
   };
 
   async componentDidMount() {
-    try {
-      const resp = await axios.get("http://localhost:3001/products");
-      let products = resp.data.data;
-      let cart = localStorage.getItem("cart");
-      let user = localStorage.getItem("user");
-      cart = cart ? JSON.parse(cart) : {};
-      user = user ? JSON.parse(user) : null;
-      this.setState({ products, user, cart });
-    } catch (err) {
-      console.log(err);
-    }
+    axios
+      .get("http://localhost:3001/products")
+      .then((response) => {
+        let products = response.data.data;
+        this.setState({ products });
+      })
+      .catch(() => {
+        this.setState({
+          products: [],
+        });
+      });
+    Auth.currentAuthenticatedUser()
+      .then((user) => {
+        if (user) this.setState({ user });
+      })
+      .catch(() => {
+        this.setState({
+          user: null,
+        });
+      });
+    let cart = localStorage.getItem("cart");
+    cart = cart ? JSON.parse(cart) : {};
+    this.setState({ cart });
   }
 
   render() {
@@ -109,6 +123,7 @@ export default class App extends Component {
           removeFromCart: this.removeFromCart,
           addToCart: this.addToCart,
           login: this.login,
+          logout: this.logout,
           addProduct: this.addProduct,
           clearCart: this.clearCart,
           checkout: this.checkout,
@@ -120,6 +135,7 @@ export default class App extends Component {
             <Switch>
               <Route exact path="/" component={ProductList} />
               <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
               <Route exact path="/cart" component={Cart} />
               <Route exact path="/checkout" component={Checkout} />
               <Route exact path="/add-product" component={AddProduct} />
