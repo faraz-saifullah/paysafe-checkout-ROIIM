@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
-import withContext from "../withContext";
+import withContext from "../../withContext";
+import { Auth } from "aws-amplify";
 import { Redirect } from "react-router-dom";
 
 class Login extends Component {
@@ -13,14 +14,19 @@ class Login extends Component {
   handleChange = (e) =>
     this.setState({ [e.target.name]: e.target.value, error: "" });
 
-  login = () => {
+  handleSubmit = async (event) => {
+    event.preventDefault();
     const { username, password } = this.state;
-    if (!username || !password) {
-      return this.setState({ error: "Fill all fields!" });
-    }
-    let loggedIn = this.props.context.login(username, password);
-    if (!loggedIn) {
-      this.setState({ error: "Invalid Credentails" });
+
+    try {
+      const user = await Auth.signIn({
+        username,
+        password,
+      });
+      this.props.context.login(user);
+      this.props.history.push("/");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -60,7 +66,7 @@ class Login extends Component {
             <div className="field is-clearfix">
               <button
                 className="button is-primary is-outlined is-pulled-right"
-                onClick={this.login}
+                onClick={this.handleSubmit}
               >
                 Submit
               </button>
