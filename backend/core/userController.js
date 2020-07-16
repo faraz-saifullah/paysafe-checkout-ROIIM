@@ -2,6 +2,7 @@ var config = require("../../src/paysafeConfig.json");
 var axios = require("axios");
 
 class User {
+  //creating new paysafe user
   async addUser(req) {
     try {
       const body = {

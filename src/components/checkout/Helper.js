@@ -21,20 +21,26 @@ export default class Helper {
   ) => {
     this.merchantRefNum = Math.random().toString(36).slice(5);
     this.customerId = customerId;
+    //handle scinario when user is logged in
     if (customerId !== "") {
-      const res = await axios.post(
-        "http://localhost:3001/payments/token",
-        {
-          merchantRefNum: this.merchantRefNum,
-          customerId: this.customerId,
-        },
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
+      //Get singleUseCustomerToken from the backend
+      try {
+        const res = await axios.post(
+          "http://localhost:3001/tokens",
+          {
+            merchantRefNum: this.merchantRefNum,
+            customerId: this.customerId,
           },
-        }
-      );
-      this.singleUseCustomerToken = res.data.singleUseCustomerToken;
+          {
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+        this.singleUseCustomerToken = res.data.singleUseCustomerToken;
+      } catch (err) {
+        return err;
+      }
     }
     customerInfo.dateOfBirth = {
       day: Number(customerInfo.day),
@@ -54,6 +60,7 @@ export default class Helper {
       displayPaymentMethods: ["card"],
       paymentMethodDetails: {},
     };
+    //handle scinario when user is logged in
     if (this.singleUseCustomerToken !== "") {
       setupInput.singleUseCustomerToken = this.singleUseCustomerToken;
     }
@@ -61,6 +68,7 @@ export default class Helper {
   };
 
   callBackFunction = async (instance, error, result) => {
+    //case when user decides to not save card
     if (result && result.paymentHandleToken && !result.customerOperation) {
       try {
         const response = await axios.post("http://localhost:3001/payments", {
@@ -79,12 +87,14 @@ export default class Helper {
         this.promiseReject(this.paymentResponse);
         throw err;
       }
+      //case when user decides to save card
     } else if (
       result &&
       result.paymentHandleToken &&
       result.customerOperation === "ADD"
     ) {
       try {
+        //pass customer Id to backend when customer waants to save card
         const response = await axios.post("http://localhost:3001/payments", {
           customerId: this.customerId,
           merchantRefNum: this.merchantRefNum,
@@ -102,6 +112,7 @@ export default class Helper {
         this.promiseReject(this.paymentResponse);
         throw err;
       }
+      //case when setup function fails to create iframe
     } else {
       this.paymentResponse.status = "failed";
       this.paymentResponse.message = "Unable To Initialize Payment";
@@ -112,10 +123,12 @@ export default class Helper {
 
   closeCallBack = (stage, expired) => {
     if (expired) {
+      //case when  payment handle expires without user completing the payment
       this.paymentResponse.status = "failed";
       this.paymentResponse.message = "Session Expired";
       this.promiseReject(this.paymentResponse);
     } else if (this.paymentResponse.status !== "success") {
+      //case when user closes the iframe before completing the payment
       this.paymentResponse.status = "failed";
       this.paymentResponse.message = "Payment Closed Unexpectedly By The User!";
       this.promiseReject(this.paymentResponse);
