@@ -226,8 +226,8 @@ class Register extends Component {
         </center>
       </Fragment>
     ) : (
-        <Redirect to="/products" />
-      );
+      <Redirect to="/products" />
+    );
   }
 }
 
