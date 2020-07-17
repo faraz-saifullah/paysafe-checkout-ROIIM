@@ -20,7 +20,7 @@ class ProductItem extends Component {
                 {product.name}{" "}
                 <span className="tag is-primary">${product.price}</span>
               </b>
-              <div>{product.shortDesc}</div>
+              <div>{product.short_desc}</div>
               {/* Handle Product out of stock scinario */}
               {product.stock > 0 ? (
                 <small>{product.stock + " Available"}</small>
