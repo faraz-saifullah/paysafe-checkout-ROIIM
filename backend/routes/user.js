@@ -5,6 +5,11 @@ const APIResponseHandler = require("../utils/APIResponseHandler/APIResponseHandl
 
 router.post("/", async function (req, res) {
   let result = await new User().addUser(req);
+  console.log('User Creation Request', req.body);
+  if (result.data)
+    console.log('User Creation Response', result.data);
+  else
+    console.log('User Creation Error Response', result);
   return new APIResponseHandler().handlePaysafe(res, result);
 });
 
