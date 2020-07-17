@@ -94,7 +94,6 @@ export default class App extends Component {
         }
       )
       .then((response) => {
-        console.log(response);
         let products = response.data.data;
         this.setState({ products });
       })
