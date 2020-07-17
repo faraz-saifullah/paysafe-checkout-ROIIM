@@ -4,6 +4,7 @@ import withContext from "../../withContext";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import config from "../../paysafeConfig.json";
+import { validateInput } from "./Validation";
 import Helper from "./Helper";
 
 class Checkout extends Component {
@@ -29,6 +30,7 @@ class Checkout extends Component {
       },
       paysafeCustomerId: "",
       isPaymentProcessing: false,
+      error: "",
     };
     this.baseState = this.state;
   }
@@ -99,21 +101,34 @@ class Checkout extends Component {
   //checkout using paysafe
   handleCheckout = async (event) => {
     event.preventDefault();
-    //setImmediate used to make sure smooth processing even
-    //when user has just logged in
-    setImmediate(() => {
-      const { cart } = this.props.context;
-      if (Object.keys(cart).length === 0 && cart.constructor === Object) {
-        alert("You have an empty cart! Please add products to cart.");
-        this.props.history.push("/products");
-        return;
-      }
-      let totalAmout = 0;
-      for (let cartItem in cart) {
-        totalAmout += cart[cartItem].product.price * 100;
-      }
-      this.paysafeCheckOut(totalAmout);
-    });
+    let validationError = validateInput(
+      this.state.customerInfo,
+      this.state.billingAddress
+    );
+    if (!validationError) {
+      this.setState({
+        error: "",
+      });
+      //setImmediate used to make sure smooth processing even
+      //when user has just logged in
+      setImmediate(() => {
+        const { cart } = this.props.context;
+        if (Object.keys(cart).length === 0 && cart.constructor === Object) {
+          alert("You have an empty cart! Please add products to cart.");
+          this.props.history.push("/products");
+          return;
+        }
+        let totalAmout = 0;
+        for (let cartItem in cart) {
+          totalAmout += cart[cartItem].product.price * 100;
+        }
+        this.paysafeCheckOut(totalAmout);
+      });
+    } else {
+      this.setState({
+        error: validationError,
+      });
+    }
   };
 
   //handle change in form input firlds for user details
@@ -145,7 +160,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.firstName}
               onChange={this.onCustomerDetailsInputChange}
               id="firstName"
-              required
             />
           </FormControl>
           <br />
@@ -155,7 +169,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.lastName}
               onChange={this.onCustomerDetailsInputChange}
               id="lastName"
-              required
             />
           </FormControl>
           <br />
@@ -165,7 +178,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.email}
               onChange={this.onCustomerDetailsInputChange}
               id="email"
-              required
             />
           </FormControl>
           <br />
@@ -175,7 +187,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.phone}
               onChange={this.onCustomerDetailsInputChange}
               id="phone"
-              required
             />
           </FormControl>
           <br />
@@ -185,7 +196,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.day}
               onChange={this.onCustomerDetailsInputChange}
               id="day"
-              required
             />
           </FormControl>
           <FormControl style={{ width: "8.3%" }}>
@@ -194,7 +204,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.month}
               onChange={this.onCustomerDetailsInputChange}
               id="month"
-              required
             />
           </FormControl>
           <FormControl style={{ width: "8.3%" }}>
@@ -203,7 +212,6 @@ class Checkout extends Component {
               value={this.state.customerInfo.year}
               onChange={this.onCustomerDetailsInputChange}
               id="year"
-              required
             />
           </FormControl>
           <br />
@@ -215,7 +223,6 @@ class Checkout extends Component {
               value={this.state.billingAddress.street}
               onChange={this.onBillingAddressInputChange}
               id="street"
-              required
             />
           </FormControl>
           <br />
@@ -234,7 +241,6 @@ class Checkout extends Component {
               value={this.state.billingAddress.city}
               onChange={this.onBillingAddressInputChange}
               id="city"
-              required
             />
           </FormControl>
           <br />
@@ -244,7 +250,6 @@ class Checkout extends Component {
               value={this.state.billingAddress.zip}
               onChange={this.onBillingAddressInputChange}
               id="zip"
-              required
             />
           </FormControl>
           <br />
@@ -254,7 +259,6 @@ class Checkout extends Component {
               value={this.state.billingAddress.state}
               onChange={this.onBillingAddressInputChange}
               id="state"
-              required
             />
           </FormControl>
           <br />
@@ -264,10 +268,12 @@ class Checkout extends Component {
               value={this.state.billingAddress.country}
               onChange={this.onBillingAddressInputChange}
               id="country"
-              required
             />
           </FormControl>
           <br />
+          {this.state.error && (
+            <div className="has-text-danger">{this.state.error}</div>
+          )}
           <br />
           <button
             type="submit"
