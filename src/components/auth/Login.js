@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import withContext from "../../withContext";
 import { Auth } from "aws-amplify";
 import { Redirect } from "react-router-dom";
+import { validateLoginInput } from "./Validation";
 
 class Login extends Component {
   constructor(props) {
@@ -9,6 +10,8 @@ class Login extends Component {
     this.state = {
       username: "",
       password: "",
+      error: "",
+      isLoggingIn: false,
     };
   }
   handleChange = (event) =>
@@ -16,17 +19,26 @@ class Login extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+    const validationError = validateLoginInput(this.state);
+    this.setState({
+      error: validationError,
+    });
     const { username, password } = this.state;
-
     try {
-      const user = await Auth.signIn({
-        username,
-        password,
-      });
-      this.props.context.login(user.attributes);
-      this.props.history.push("/");
+      if (!validationError) {
+        this.setState({ isLoggingIn: true });
+        const user = await Auth.signIn({
+          username,
+          password,
+        });
+        this.props.context.login(user.attributes);
+        this.props.history.push("/");
+      }
     } catch (error) {
-      console.log(error);
+      this.setState({
+        error: error.message,
+        isLoggingIn: false,
+      });
     }
   };
 
@@ -67,6 +79,7 @@ class Login extends Component {
               <button
                 className="button is-primary is-outlined is-pulled-right"
                 onClick={this.handleSubmit}
+                disabled={this.state.isLoggingIn}
               >
                 Submit
               </button>
