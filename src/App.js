@@ -85,16 +85,18 @@ export default class App extends Component {
   //Update user and product details after finishing the async call
   async componentDidMount() {
     axios
-      .get("http://localhost:3001/products", {
+      .get("http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/products", {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
       })
       .then((response) => {
+        console.log(response);
         let products = response.data.data;
         this.setState({ products });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         this.setState({
           products: [],
         });

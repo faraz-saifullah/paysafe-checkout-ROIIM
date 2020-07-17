@@ -26,7 +26,7 @@ export default class Helper {
       //Get singleUseCustomerToken from the backend
       try {
         const res = await axios.post(
-          "http://localhost:3001/tokens",
+          "http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/tokens",
           {
             merchantRefNum: this.merchantRefNum,
             customerId: this.customerId,
@@ -71,7 +71,7 @@ export default class Helper {
     //case when user decides to not save card
     if (result && result.paymentHandleToken && !result.customerOperation) {
       try {
-        const response = await axios.post("http://localhost:3001/payments", {
+        const response = await axios.post("http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/payments", {
           merchantRefNum: this.merchantRefNum,
           paymentHandleToken: result.paymentHandleToken,
           amount: result.amount,
@@ -95,7 +95,7 @@ export default class Helper {
     ) {
       try {
         //pass customer Id to backend when customer waants to save card
-        const response = await axios.post("http://localhost:3001/payments", {
+        const response = await axios.post("http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/payments", {
           customerId: this.customerId,
           merchantRefNum: this.merchantRefNum,
           paymentHandleToken: result.paymentHandleToken,

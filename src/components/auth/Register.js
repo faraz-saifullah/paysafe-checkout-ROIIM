@@ -27,7 +27,7 @@ class Register extends Component {
   createPaysafeUser = async () => {
     try {
       const user = await axios.post(
-        "http://localhost:3001/users",
+        "http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/users",
         {
           username: this.state.username,
           firstName: this.state.firstName,
@@ -211,8 +211,8 @@ class Register extends Component {
         </center>
       </Fragment>
     ) : (
-      <Redirect to="/products" />
-    );
+        <Redirect to="/products" />
+      );
   }
 }
 
