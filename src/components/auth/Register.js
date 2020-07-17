@@ -71,7 +71,7 @@ class Register extends Component {
     } catch (err) {
       return err;
     }
-  }
+  };
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -84,11 +84,13 @@ class Register extends Component {
       if (!validationError) {
         const userData = await this.createPaysafeUser();
         if (userData && userData.id) {
-          this.createCognitoUser(userData, username, email, password).then(() => {
-            alert(
-              "User created successfully!\nPlease check your email for confirmation link and then Log In!"
-            );
-          })
+          this.createCognitoUser(userData, username, email, password).then(
+            () => {
+              alert(
+                "User created successfully!\nPlease check your email for confirmation link and then Log In!"
+              );
+            }
+          );
           this.props.history.push("/login");
         } else {
           this.setState({
@@ -224,8 +226,8 @@ class Register extends Component {
         </center>
       </Fragment>
     ) : (
-        <Redirect to="/products" />
-      );
+      <Redirect to="/products" />
+    );
   }
 }
 
