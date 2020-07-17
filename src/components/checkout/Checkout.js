@@ -4,7 +4,7 @@ import withContext from "../../withContext";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import config from "../../paysafeConfig.json";
-import { validateInput } from "./Validation"
+import { validateInput } from "./Validation";
 import Helper from "./Helper";
 
 class Checkout extends Component {
@@ -30,7 +30,7 @@ class Checkout extends Component {
       },
       paysafeCustomerId: "",
       isPaymentProcessing: false,
-      error: ""
+      error: "",
     };
     this.baseState = this.state;
   }
@@ -101,11 +101,14 @@ class Checkout extends Component {
   //checkout using paysafe
   handleCheckout = async (event) => {
     event.preventDefault();
-    let validationError = validateInput(this.state.customerInfo, this.state.billingAddress);
+    let validationError = validateInput(
+      this.state.customerInfo,
+      this.state.billingAddress
+    );
     if (!validationError) {
       this.setState({
-        error: ""
-      })
+        error: "",
+      });
       //setImmediate used to make sure smooth processing even
       //when user has just logged in
       setImmediate(() => {
@@ -123,8 +126,8 @@ class Checkout extends Component {
       });
     } else {
       this.setState({
-        error: validationError
-      })
+        error: validationError,
+      });
     }
   };
 
