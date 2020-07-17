@@ -71,7 +71,11 @@ class Register extends Component {
     } catch (err) {
       return err;
     }
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> cf8b0a0... Login and Registration form input validation
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -84,6 +88,7 @@ class Register extends Component {
       if (!validationError) {
         const userData = await this.createPaysafeUser();
         if (userData && userData.id) {
+<<<<<<< HEAD
           this.createCognitoUser(userData, username, email, password).then(
             () => {
               alert(
@@ -91,6 +96,13 @@ class Register extends Component {
               );
             }
           );
+=======
+          this.createCognitoUser(userData, username, email, password).then(() => {
+            alert(
+              "User created successfully!\nPlease check your email for confirmation link and then Log In!"
+            );
+          })
+>>>>>>> cf8b0a0... Login and Registration form input validation
           this.props.history.push("/login");
         } else {
           this.setState({
