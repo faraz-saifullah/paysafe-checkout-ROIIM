@@ -1,4 +1,7 @@
 # paysafe-checkout-ROIIM
+
+Hosted at : http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3000/
+
 This is a simple E-commerce website where users can purchase products from an existing list of products and make Payments.
 Payment functionality is implemented using Paysafe. (All the payments are test payments and funds are not actually deducted from cards)
 
@@ -57,8 +60,7 @@ How to use?
   While making the payment you can chose to save you card which will be visible to you as a saved card from the next transaction onwards.
   
   
-  The entire application is made from scratch in just over 2 days some imperfections might be there and 
-  some of the things need more working, for example: form input validations etc.
+  The entire application is made from scratch in just over 3 days hence some imperfections might be there.
   
   
   For any queries You can contact:
