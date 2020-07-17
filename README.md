@@ -1,5 +1,8 @@
 # paysafe-checkout-ROIIM
-This is a simple E-commerce website where user can purchase from the existing list of products and make Payments.
+
+Hosted at : http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3000/
+
+This is a simple E-commerce website where users can purchase products from an existing list of products and make Payments.
 Payment functionality is implemented using Paysafe. (All the payments are test payments and funds are not actually deducted from cards)
 
 Below are the instructions to deploy and use the application locall:
@@ -20,14 +23,22 @@ To successfully deploy the application you should clone this repository, checkou
   2. Create a Postgres database `e_commerce`
   3. Using the `paysafe-checkout-ROIIM/e_commerce.sql` file update the `e_commerce` database
   4. Checkout `paysafe-checkout-ROIIM/backend` directory and run the following commands
-    `npm install`
-    `npm start` or `nodemon`
-  5. Checkout `paysafe-checkout-ROIIM/` directory in another terminal and run the following commands
-    `npm install`
-    `npm start`
-  6. Connect to `localhost:3000` and start using the application
   
+    `npm install`
+    
+    `npm start` or `nodemon`
+    
+  5. Checkout `paysafe-checkout-ROIIM/` directory in another terminal and run the following commands
+  
+    `npm install`
+    
+    `npm start`
+    
+  6. Connect to `localhost:3000` and start using the application
+
+
 How to use?
+
   After successfull completion of the above steps you should see a list of products on `localhost:3000`.
   You can add any of those products to cart and proceed to checkout.
   You can individual products or clear the entire cart on `localhost:3000/cart`
@@ -49,12 +60,15 @@ How to use?
   While making the payment you can chose to save you card which will be visible to you as a saved card from the next transaction onwards.
   
   
-  The entire application is made from scratch in just 2 days some imperfections might be there and 
-  some of the things need more working for example form input validations etc.
+  The entire application is made from scratch in just over 3 days hence some imperfections might be there.
   
   
   For any queries You can contact:
+  
   Faraz Saifullah
+  
   Phone: +91 - 91453 82864
+  
   Email: isaifullah01@gmail.com
+  
   LinkedIn: https://in.linkedin.com/in/faraz-saifullah`

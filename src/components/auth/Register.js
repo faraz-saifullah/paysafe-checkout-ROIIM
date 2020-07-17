@@ -6,6 +6,7 @@ import Input from "@material-ui/core/Input";
 import { Redirect } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import axios from "axios";
+import { validateRegisterInput } from "./Validation";
 
 class Register extends Component {
   constructor(props) {
@@ -21,13 +22,14 @@ class Register extends Component {
       day: "",
       month: "",
       year: "",
+      error: "",
     };
   }
 
   createPaysafeUser = async () => {
     try {
       const user = await axios.post(
-        "http://localhost:3001/users",
+        "http://ec2-3-136-87-139.us-east-2.compute.amazonaws.com:3001/users",
         {
           username: this.state.username,
           firstName: this.state.firstName,
@@ -50,35 +52,56 @@ class Register extends Component {
     }
   };
 
+  createCognitoUser = async (userData, username, email, password) => {
+    try {
+      await Auth.signUp({
+        username,
+        password,
+        attributes: {
+          email: email,
+          "custom:paysafe_id": `${userData.id}`,
+          "custom:firstName": `${userData.firstName}`,
+          "custom:lastName": `${userData.lastName}`,
+          "custom:phone": `${userData.phone}`,
+          "custom:day": `${userData.dateOfBirth.day}`,
+          "custom:month": `${userData.dateOfBirth.month}`,
+          "custom:year": `${userData.dateOfBirth.year}`,
+        },
+      });
+    } catch (err) {
+      return err;
+    }
+  };
+
   handleSubmit = async (event) => {
     event.preventDefault();
+    const validationError = validateRegisterInput(this.state);
+    this.setState({
+      error: validationError,
+    });
     const { username, email, password } = this.state;
     try {
-      const userData = await this.createPaysafeUser();
-      if (userData && userData.id) {
-        await Auth.signUp({
-          username,
-          password,
-          attributes: {
-            email: email,
-            "custom:paysafe_id": `${userData.id}`,
-            "custom:firstName": `${userData.firstName}`,
-            "custom:lastName": `${userData.lastName}`,
-            "custom:phone": `${userData.phone}`,
-            "custom:day": `${userData.dateOfBirth.day}`,
-            "custom:month": `${userData.dateOfBirth.month}`,
-            "custom:year": `${userData.dateOfBirth.year}`,
-          },
-        });
-        alert(
-          "User created successfully! Please check your email for confirmation link and Log In!"
-        );
-        this.props.history.push("/login");
-      } else {
-        alert("Failed to create user. Try Again!");
+      if (!validationError) {
+        const userData = await this.createPaysafeUser();
+        if (userData && userData.id) {
+          this.createCognitoUser(userData, username, email, password).then(
+            () => {
+              alert(
+                "User created successfully!\nPlease check your email for confirmation link and then Log In!"
+              );
+            }
+          );
+          this.props.history.push("/login");
+        } else {
+          this.setState({
+            error: "Username already exists",
+          });
+        }
       }
     } catch (error) {
-      console.log(error);
+      this.setState({
+        error: error.message,
+      });
     }
   };
 
@@ -106,7 +129,6 @@ class Register extends Component {
                 value={this.state.username}
                 onChange={this.onFormInputChange}
                 id="username"
-                required
               />
             </FormControl>
             <br />
@@ -116,7 +138,6 @@ class Register extends Component {
                 value={this.state.firstName}
                 onChange={this.onFormInputChange}
                 id="firstName"
-                required
               />
             </FormControl>
             <br />
@@ -126,7 +147,6 @@ class Register extends Component {
                 value={this.state.lastName}
                 onChange={this.onFormInputChange}
                 id="lastName"
-                required
               />
             </FormControl>
             <br />
@@ -136,8 +156,6 @@ class Register extends Component {
                 value={this.state.email}
                 onChange={this.onFormInputChange}
                 id="email"
-                type="email"
-                required
               />
             </FormControl>
             <br />
@@ -147,7 +165,6 @@ class Register extends Component {
                 value={this.state.phone}
                 onChange={this.onFormInputChange}
                 id="phone"
-                required
               />
             </FormControl>
             <br />
@@ -157,7 +174,6 @@ class Register extends Component {
                 value={this.state.day}
                 onChange={this.onFormInputChange}
                 id="day"
-                required
               />
             </FormControl>
             <FormControl style={{ width: "8.3%" }}>
@@ -166,7 +182,6 @@ class Register extends Component {
                 value={this.state.month}
                 onChange={this.onFormInputChange}
                 id="month"
-                required
               />
             </FormControl>
             <FormControl style={{ width: "8.3%" }}>
@@ -175,7 +190,6 @@ class Register extends Component {
                 value={this.state.year}
                 onChange={this.onFormInputChange}
                 id="year"
-                required
               />
             </FormControl>
             <br />
@@ -186,7 +200,6 @@ class Register extends Component {
                 onChange={this.onFormInputChange}
                 id="password"
                 type="password"
-                required
               />
             </FormControl>
             <br />
@@ -199,10 +212,12 @@ class Register extends Component {
                 onChange={this.onFormInputChange}
                 id="confirmPassword"
                 type="password"
-                required
               />
             </FormControl>
             <br />
+            {this.state.error && (
+              <div className="has-text-danger">{this.state.error}</div>
+            )}
             <br />
             <button type="submit" className="button is-primary is-medium">
               Register
@@ -211,8 +226,8 @@ class Register extends Component {
         </center>
       </Fragment>
     ) : (
-      <Redirect to="/products" />
-    );
+        <Redirect to="/products" />
+      );
   }
 }
 
